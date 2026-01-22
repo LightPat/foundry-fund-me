@@ -29,7 +29,7 @@ contract HelperConfig is Script {
             activeNetworkConfig = getMainnetEthConfig();
         }
         else {
-            activeNetworkConfig = getAnvilEthConfig();
+            activeNetworkConfig = getOrCreateAnvilEthConfig();
         }
     }
 
@@ -45,8 +45,12 @@ contract HelperConfig is Script {
         return mainnetConfig;
     }
 
-    function getAnvilEthConfig() public returns (NetworkConfig memory) {
-        // price feed address
+    function getOrCreateAnvilEthConfig() public returns (NetworkConfig memory) {
+        // If we call this function twice on accident it will create a new price feed.
+        // So if the priceFeed is not the default value, return the existing one
+        if (activeNetworkConfig.priceFeed != address(0)) {
+            return activeNetworkConfig;
+        }
 
         // 1. Deploy the mocks
         // 2. Return the mock address
