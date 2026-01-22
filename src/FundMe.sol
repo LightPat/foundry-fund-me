@@ -19,7 +19,7 @@ contract FundMe {
     mapping(address funder => uint256 amountFunded) private s_addressToAmountFunded;
 
     // Immutable keyword saves gas
-    address public immutable I_OWNER;
+    address private immutable I_OWNER;
     AggregatorV3Interface private s_priceFeed;
 
     constructor(address priceFeed) {
@@ -39,10 +39,12 @@ contract FundMe {
     }
 
     function withdraw() public onlyOwner {
-        for (uint funderIndex = 0; funderIndex < s_funders.length; funderIndex++) {
+        // Reading and writing to storage variables is expensive. To save gas, we cache the funders array length
+        uint256 fundersLength = s_funders.length;
+
+        for (uint funderIndex = 0; funderIndex < fundersLength; funderIndex++) {
             address funder = s_funders[funderIndex];
             s_addressToAmountFunded[funder] = 0;
-
         }
         s_funders = new address[](0);
 
@@ -95,5 +97,9 @@ contract FundMe {
 
     function getFunder(uint256 index) external view returns (address) {
         return s_funders[index];
+    }
+
+    function getOwner() external view returns (address) {
+        return I_OWNER;
     }
 }
