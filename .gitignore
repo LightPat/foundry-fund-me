@@ -27,3 +27,6 @@ docs/
 
 broadcast/
 lib/
+
+.DS_Store
+zkout/
