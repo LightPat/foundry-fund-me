@@ -2,6 +2,7 @@
 pragma solidity ^0.8.18;
 
 import {PriceConverter} from "./PriceConverter.sol";
+import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 
 // Custom Errors save gas
 error FundMe__NotOwner();
@@ -19,9 +20,11 @@ contract FundMe {
 
     // Immutable keyword saves gas
     address public immutable I_OWNER;
+    AggregatorV3Interface private S_PRICEFEED;
 
-    constructor() {
+    constructor(address priceFeed) {
         I_OWNER = msg.sender;
+        S_PRICEFEED = AggregatorV3Interface(priceFeed);
     }
 
     function fund() public payable {
@@ -30,7 +33,7 @@ contract FundMe {
 
         // Convert the sent ETH amount into its USD value
         // and ensure it is at least $5.00 (5e18 in scaled USD)
-        require(msg.value.getConversionRate() >= MINIMUM_USD, "didn't send enough ETH");
+        require(msg.value.getConversionRate(S_PRICEFEED) >= MINIMUM_USD, "didn't send enough ETH");
         funders.push(msg.sender);
         addressToAmountFunded[msg.sender] += msg.value;
     }
@@ -77,5 +80,9 @@ contract FundMe {
     // If msg.data isn't empty but it doesn't match any other function in our contract, fallback will be called
     fallback() external payable {
         fund();
+    }
+
+    function getVersion() public view returns (uint256) {
+        return S_PRICEFEED.version();
     }
 }
