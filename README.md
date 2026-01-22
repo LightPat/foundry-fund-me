@@ -64,3 +64,10 @@ $ forge --help
 $ anvil --help
 $ cast --help
 ```
+
+### Deploying To Local Anvil Chain
+
+```
+make anvil
+make deploy
+```
