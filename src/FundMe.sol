@@ -42,7 +42,7 @@ contract FundMe {
         // Reading and writing to storage variables is expensive. To save gas, we cache the funders array length
         uint256 fundersLength = s_funders.length;
 
-        for (uint funderIndex = 0; funderIndex < fundersLength; funderIndex++) {
+        for (uint256 funderIndex = 0; funderIndex < fundersLength; funderIndex++) {
             address funder = s_funders[funderIndex];
             s_addressToAmountFunded[funder] = 0;
         }
@@ -71,7 +71,7 @@ contract FundMe {
 
     function _onlyOwner() internal view {
         // require(msg.sender == I_OWNER, FundMe__NotOwner());
-        if (msg.sender != I_OWNER) { revert FundMe__NotOwner(); }
+        if (msg.sender != I_OWNER) revert FundMe__NotOwner();
     }
 
     // If msg.data is empty, receive will be called

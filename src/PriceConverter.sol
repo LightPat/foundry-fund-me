@@ -13,8 +13,8 @@ library PriceConverter {
         // Example:
         // ETH price = 2000.00000000 USD
         // Returned value = 200000000000 (2000 * 10^8)
-        (,int256 price,,,) = priceFeed.latestRoundData();
-        
+        (, int256 price,,,) = priceFeed.latestRoundData();
+
         // Convert price from 8 decimals to 18 decimals
         // 10^18 / 10^8 = 10^10
         //
@@ -40,7 +40,7 @@ library PriceConverter {
         // Example:
         // ethPrice = 2000e18
         // ethAmount = 1e18 (1 ETH)
-        
+
         // (2000e18 * 1e18) / 1e18 = 2000e18
         uint256 ethAmountInUsd = (ethPrice * ethAmount) / 1e18;
         return ethAmountInUsd;
