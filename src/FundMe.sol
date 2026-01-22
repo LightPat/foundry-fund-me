@@ -4,7 +4,7 @@ pragma solidity ^0.8.18;
 import {PriceConverter} from "./PriceConverter.sol";
 
 // Custom Errors save gas
-error NotOwner();
+error FundMe__NotOwner();
 
 contract FundMe {
     using PriceConverter for uint256;
@@ -18,10 +18,10 @@ contract FundMe {
     mapping(address funder => uint256 amountFunded) public addressToAmountFunded;
 
     // Immutable keyword saves gas
-    address public immutable i_owner;
+    address public immutable I_OWNER;
 
     constructor() {
-        i_owner = msg.sender;
+        I_OWNER = msg.sender;
     }
 
     function fund() public payable {
@@ -60,9 +60,13 @@ contract FundMe {
     }
 
     modifier onlyOwner() {
-        // require(msg.sender == i_owner, NotOwner());
-        if (msg.sender != i_owner) { revert NotOwner(); }
+        _onlyOwner();
         _;
+    }
+
+    function _onlyOwner() internal view {
+        // require(msg.sender == I_OWNER, FundMe__NotOwner());
+        if (msg.sender != I_OWNER) { revert FundMe__NotOwner(); }
     }
 
     // If msg.data is empty, receive will be called
