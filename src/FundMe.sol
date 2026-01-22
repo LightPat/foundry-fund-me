@@ -15,16 +15,16 @@ contract FundMe {
     // Constant keyword saves gas
     uint256 public constant MINIMUM_USD = 5e18;
 
-    address[] public funders;
-    mapping(address funder => uint256 amountFunded) public addressToAmountFunded;
+    address[] private s_funders;
+    mapping(address funder => uint256 amountFunded) private s_addressToAmountFunded;
 
     // Immutable keyword saves gas
     address public immutable I_OWNER;
-    AggregatorV3Interface private S_PRICEFEED;
+    AggregatorV3Interface private s_priceFeed;
 
     constructor(address priceFeed) {
         I_OWNER = msg.sender;
-        S_PRICEFEED = AggregatorV3Interface(priceFeed);
+        s_priceFeed = AggregatorV3Interface(priceFeed);
     }
 
     function fund() public payable {
@@ -33,18 +33,18 @@ contract FundMe {
 
         // Convert the sent ETH amount into its USD value
         // and ensure it is at least $5.00 (5e18 in scaled USD)
-        require(msg.value.getConversionRate(S_PRICEFEED) >= MINIMUM_USD, "didn't send enough ETH");
-        funders.push(msg.sender);
-        addressToAmountFunded[msg.sender] += msg.value;
+        require(msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD, "didn't send enough ETH");
+        s_funders.push(msg.sender);
+        s_addressToAmountFunded[msg.sender] += msg.value;
     }
 
     function withdraw() public onlyOwner {
-        for (uint funderIndex = 0; funderIndex < funders.length; funderIndex++) {
-            address funder = funders[funderIndex];
-            addressToAmountFunded[funder] = 0;
+        for (uint funderIndex = 0; funderIndex < s_funders.length; funderIndex++) {
+            address funder = s_funders[funderIndex];
+            s_addressToAmountFunded[funder] = 0;
 
         }
-        funders = new address[](0);
+        s_funders = new address[](0);
 
         // withdraw the funds
         // https://solidity-by-example.org/sending-ether/
@@ -83,6 +83,17 @@ contract FundMe {
     }
 
     function getVersion() public view returns (uint256) {
-        return S_PRICEFEED.version();
+        return s_priceFeed.version();
+    }
+
+    /**
+     * View / Pure Functions (Getters)
+     */
+    function getAddressToAmountFunded(address fundingAddress) external view returns (uint256) {
+        return s_addressToAmountFunded[fundingAddress];
+    }
+
+    function getFunder(uint256 index) external view returns (address) {
+        return s_funders[index];
     }
 }
