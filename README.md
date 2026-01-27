@@ -37,7 +37,7 @@ This is a minimal project allowing users to fund the contract owner with donatio
 
 ```
 git clone https://github.com/LightPat/foundry-fund-me.git
-cd foundry-fund-me-cu
+cd foundry-fund-me
 make
 ```
 
