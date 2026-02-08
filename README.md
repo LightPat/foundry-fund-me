@@ -17,7 +17,7 @@ This is a minimal project allowing users to fund the contract owner with donatio
   - [Testing](#testing)
     - [Test Coverage](#test-coverage)
 - [Deployment to a testnet or mainnet](#deployment-to-a-testnet-or-mainnet)
-- [Deploying To a local anvil chain](#Deploying to local anvil chain)
+- [Deploying to a local anvil chain](#Deploying-to-local-anvil-chain)
   - [Scripts](#scripts)
     - [Withdraw](#withdraw)
   - [Estimate gas](#estimate-gas)
